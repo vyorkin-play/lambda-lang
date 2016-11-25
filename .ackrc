@@ -1,0 +1,5 @@
+--ignore-file=ext:svg
+--ignore-file=ext:log
+
+--ignore-directory=is:dist
+--ignore-directory=is:flow-types

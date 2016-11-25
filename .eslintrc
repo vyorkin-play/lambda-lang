@@ -1,0 +1,57 @@
+{
+  "extends": [
+    "airbnb/base",
+    "plugin:flowtype/recommended",
+    "plugin:fp/recommended",
+    "plugin:ava/recommended",
+  ],
+  "parser": "babel-eslint",
+  "plugins": [
+    "flowtype",
+    "ava",
+    "fp",
+    "prefer-object-spread",
+    "import",
+    "promise",
+  ],
+  "settings": {
+    "flowtype": {
+      "onlyFilesWithFlowAnnotation": true,
+    },
+  },
+  "env": {
+    "browser": true,
+  },
+  "rules": {
+    "import/extensions": [2, "never"],
+    "import/no-unresolved": 0,
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": true,
+      "optionalDependencies": false,
+    }],
+
+    "no-duplicate-imports": [0],
+    "no-confusing-arrow": 0,
+    "no-underscore-dangle": 0,
+    "semi": ["error", "always"],
+    "new-cap": [2, {"capIsNew": false, "newIsCap": true }],
+    "arrow-parens": 0,
+    "comma-dangle": ["error", "always-multiline"],
+    "operator-linebreak": ["error", "after"],
+
+    "fp/no-class": 0,
+    "fp/no-this": 0,
+    "fp/no-nil": 0,
+    "fp/no-mutation": 0,
+    "fp/no-unused-expression": 0,
+
+    "promise/param-names": 2,
+    "promise/always-return": 2,
+    "promise/catch-or-return": 2,
+    "promise/no-native": 0,
+
+    "prefer-object-spread/prefer-object-spread": 2,
+  },
+  "globals": {
+  }
+}

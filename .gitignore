@@ -1,0 +1,10 @@
+npm-debug.log
+yarn-error.log
+*.map
+
+node_modules/
+flow-typed/
+/dist/
+/coverage/
+/docs/
+/tmp/
