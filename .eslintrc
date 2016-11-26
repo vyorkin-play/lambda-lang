@@ -2,14 +2,12 @@
   "extends": [
     "airbnb/base",
     "plugin:flowtype/recommended",
-    "plugin:fp/recommended",
     "plugin:ava/recommended",
   ],
   "parser": "babel-eslint",
   "plugins": [
     "flowtype",
     "ava",
-    "fp",
     "prefer-object-spread",
     "import",
     "promise",
@@ -21,6 +19,7 @@
   },
   "env": {
     "browser": true,
+    "node": true,
   },
   "rules": {
     "import/extensions": [2, "never"],
@@ -39,13 +38,6 @@
     "comma-dangle": ["error", "always-multiline"],
     "operator-linebreak": ["error", "after"],
     "no-plusplus": 0,
-
-    "fp/no-class": 0,
-    "fp/no-this": 0,
-    "fp/no-throw": 0,
-    "fp/no-nil": 0,
-    "fp/no-mutation": 0,
-    "fp/no-unused-expression": 0,
 
     "promise/param-names": 2,
     "promise/always-return": 2,

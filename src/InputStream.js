@@ -1,17 +1,5 @@
 // @flow
 
-export class InputStreamError extends Error {
-  line: number;
-  column: number;
-
-  constructor(message: string, line: number, column: number) {
-    super(`${message} (${line}:${column})`);
-    this.message = message;
-    this.line = line;
-    this.column = column;
-  }
-}
-
 export default class InputStream {
   input: string;
   pos: number;
@@ -21,6 +9,10 @@ export default class InputStream {
   constructor(input: string) {
     this.input = input;
     this.reset();
+  }
+
+  get length(): number {
+    return this.input.length;
   }
 
   peek(): string {
@@ -43,11 +35,7 @@ export default class InputStream {
   }
 
   croak(message: string) {
-    throw new InputStreamError(
-      message,
-      this.line,
-      this.column
-    );
+    throw new Error(`${message} (${this.line}:${this.column})`);
   }
 
   reset() {

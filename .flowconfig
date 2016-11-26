@@ -1,5 +1,7 @@
 [ignore]
 .*/node_modules/.*[^e]\.json$
+.*/node_modules/rollup-plugin-flow/.*
+.*/node_modules/flow-remove-types/.*
 
 [include]
 
@@ -7,6 +9,7 @@
 src/flow/
 
 [options]
+unsafe.enable_getters_and_setters=true
 module.file_ext=.js
 module.file_ext=.json
 suppress_type=$FlowIssue
