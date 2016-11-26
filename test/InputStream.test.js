@@ -6,12 +6,8 @@ const input = `def foo(test) {
 }
 `;
 
-function createStream() {
-  return new InputStream(input);
-}
-
 test('has a valid initial state', t => {
-  const stream = createStream();
+  const stream = new InputStream(input);
 
   t.is(stream.length, input.length);
   t.is(stream.pos, 0);
@@ -21,7 +17,7 @@ test('has a valid initial state', t => {
 });
 
 test('advances forward by one char at a time', t => {
-  const stream = createStream();
+  const stream = new InputStream(input);
 
   t.is(stream.next(), 'd');
   t.is(stream.pos, 1);
@@ -34,7 +30,7 @@ test('advances forward by one char at a time', t => {
 });
 
 test('correctly handles line breaks', t => {
-  const stream = createStream();
+  const stream = new InputStream(input);
   for (let i = 0; i < 15; i++) {
     stream.next();
   }
@@ -52,7 +48,7 @@ test('correctly handles line breaks', t => {
 });
 
 test('peek works as expected', t => {
-  const stream = createStream();
+  const stream = new InputStream(input);
   stream.next();
   stream.next();
   stream.next();
@@ -65,7 +61,7 @@ test('peek works as expected', t => {
 });
 
 test('correctly reports eof', t => {
-  const stream = createStream();
+  const stream = new InputStream(input);
   for (let i = 0; i < stream.length - 1; i++) {
     stream.next();
   }
@@ -76,7 +72,7 @@ test('correctly reports eof', t => {
 });
 
 test('croak throws a valid error message', t => {
-  const stream = createStream();
+  const stream = new InputStream(input);
   for (let i = 0; i < 10; i++) {
     stream.next();
   }
