@@ -3,8 +3,17 @@
 import InputStream from './InputStream';
 
 type Predicate = (token: string) => boolean;
-type Token = {
-  type: string,
+
+export type TokenType =
+  | 'Keyword'
+  | 'Variable'
+  | 'Number'
+  | 'String'
+  | 'Operator'
+  | 'Punctuation';
+
+export type Token = {
+  type: TokenType,
   value: string | number,
 };
 
@@ -47,8 +56,8 @@ export default class TokenStream {
     return this.peek() === null;
   }
 
-  croak(message: string) {
-    return this.input.croak(message);
+  error(message: string) {
+    return this.input.error(message);
   }
 
   readNext(): ?Token {
@@ -77,9 +86,7 @@ export default class TokenStream {
       };
     }
 
-    this.input.croak(`Unexpected character: ${char}`);
-
-    return null;
+    throw this.error(`Unexpected character: ${char}`);
   }
 
   readString(): Token {

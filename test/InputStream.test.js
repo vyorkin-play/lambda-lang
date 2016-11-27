@@ -71,13 +71,13 @@ test('correctly reports eof', t => {
   t.truthy(stream.eof());
 });
 
-test('croak throws a valid error message', t => {
+test('returns valid error message', t => {
   const stream = new InputStream(input);
   for (let i = 0; i < 10; i++) {
     stream.next();
   }
 
-  const error = t.throws(() => stream.croak('fucked up'), Error);
+  const error = stream.error('fucked up');
   t.is(error.toString(), 'Error: fucked up (1:10)');
 });
 

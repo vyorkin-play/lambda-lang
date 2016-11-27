@@ -34,8 +34,8 @@ export default class InputStream {
     return this.peek() === '';
   }
 
-  croak(message: string) {
-    throw new Error(`${message} (${this.line}:${this.column})`);
+  error(message: string) {
+    return new Error(`${message} (${this.line}:${this.column})`);
   }
 
   reset() {
