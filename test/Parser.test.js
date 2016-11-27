@@ -31,8 +31,19 @@ test('parses booleans', t => {
   t.deepEqual(falseNode, { type: 'Boolean', value: false });
 });
 
+test('correctly parses assignment expression', t => {
+  const parser = createParser('x = 42');
+  const variable = parser.parseAtom();
+  const expr = parser.maybeBinary(variable);
 
-test('is able to parse simple lambda', t => {
+  t.deepEqual(expr, {
+    type: 'Assignment',
+    lhs: { type: 'Variable', value: 'x' },
+    rhs: { type: 'Number', value: 42 },
+  });
+});
+
+test('is able to parse a simple lambda', t => {
   const parser = createParser('(x) { x * 2 }');
   const lambda = parser.parseLambda();
 
@@ -50,6 +61,44 @@ test('is able to parse simple lambda', t => {
         type: 'Number',
         value: 2,
       },
+    },
+  });
+});
+
+test('correctly parses complex lambdas', t => {
+  const parser = createParser(`
+    ( x,    y )   {
+      z = x   * y;
+      z -  4 }
+  `);
+  const lambda = parser.parseLambda();
+
+  t.deepEqual(lambda, {
+    type: 'Lambda',
+    variables: ['x', 'y'],
+    body: {
+      type: 'Program',
+      program: [
+        {
+          type: 'Assignment',
+          lhs: {
+            type: 'Variable',
+            value: 'z',
+          },
+          rhs: {
+            type: 'Binary',
+            operator: '*',
+            lhs: { type: 'Variable', value: 'x' },
+            rhs: { type: 'Variable', value: 'y' },
+          },
+        },
+        {
+          type: 'Binary',
+          operator: '-',
+          lhs: { type: 'Variable', value: 'z' },
+          rhs: { type: 'Number', value: 4 },
+        },
+      ],
     },
   });
 });

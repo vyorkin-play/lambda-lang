@@ -64,7 +64,7 @@ export default class Parser {
     this.input = input;
   }
 
-  parse(): AST {
+  parseExpressions(): AST {
     const program = [];
 
     while (!this.input.eof()) {
