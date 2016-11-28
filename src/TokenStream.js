@@ -32,7 +32,7 @@ export default class TokenStream {
   static isIdentifier = (char: string) =>
     TokenStream.isIdentifierStart(char) ||
     TokenStream.isDigit(char) ||
-    '?!'.includes(char);
+    '-?!'.includes(char);
 
   input: InputStream;
   current: ?Token;
@@ -102,6 +102,9 @@ export default class TokenStream {
   escaped(endChar: string): string {
     let escaped = false;
     let result = '';
+
+    this.input.next();
+
     while (!this.input.eof()) {
       const char = this.input.next();
       if (escaped) {
@@ -115,6 +118,7 @@ export default class TokenStream {
         result += char;
       }
     }
+
     return result;
   }
 
@@ -135,11 +139,9 @@ export default class TokenStream {
   }
 
   identifier(): Token {
-    const result = this.readWhile(TokenStream.isIdentifier);
-    return {
-      type: TokenStream.isKeyword(result) ? 'Keyword' : 'Variable',
-      value: result,
-    };
+    const value = this.readWhile(TokenStream.isIdentifier);
+    const type = TokenStream.isKeyword(value) ? 'Keyword' : 'Variable';
+    return { type, value };
   }
 
   readWhile(predicate: Predicate) {
@@ -151,7 +153,7 @@ export default class TokenStream {
   }
 
   skipComment() {
-    this.readWhile(TokenStream.isWhiteSpace);
+    this.readWhile((char: string) => char !== '\n');
     this.input.next();
   }
 }
