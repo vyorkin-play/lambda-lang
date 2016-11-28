@@ -3,7 +3,6 @@
 import TokenStream from './TokenStream';
 import type { Token, TokenType } from './TokenStream';
 
-/* eslint-disable no-use-before-define */
 type ParseFn<R: string | AST> = () => R;
 type DelimitedOptions = {
   start: string,
@@ -33,7 +32,6 @@ type AST =
   | AssignmentNode
   | BinaryNode
   | ProgramNode;
-/* eslint-enable no-use-before-define */
 
 const Bool = (value: boolean) => ({ type: 'Boolean', value });
 
@@ -64,11 +62,11 @@ export default class Parser {
     this.input = input;
   }
 
-  parseExpressions(): AST {
+  expressions(): AST {
     const program = [];
 
     while (!this.input.eof()) {
-      const ast = this.parseExpression();
+      const ast = this.expression();
       program.push(ast);
 
       if (!this.input.eof()) {
@@ -79,9 +77,9 @@ export default class Parser {
     return { type: 'Program', program };
   }
 
-  parseProgram(): AST {
-    const program = this.parseDelimited(
-      this.parseExpression, {
+  program(): AST {
+    const program = this.delimited(
+      this.expression, {
         start: '{',
         stop: '}',
         separator: ';',
@@ -94,13 +92,13 @@ export default class Parser {
     return { type: 'Program', program };
   }
 
-  parseCondition(): ConditionNode {
+  condition(): ConditionNode {
     this.skip('if', 'Keyword');
-    const condition = this.parseExpression();
+    const condition = this.expression();
     if (!this.is('{', 'Punctuation')) {
       this.skip('then', 'Keyword');
     }
-    const then = this.parseExpression();
+    const then = this.expression();
 
     if (this.is('else', 'Keyword')) {
       this.next();
@@ -108,7 +106,7 @@ export default class Parser {
         type: 'Condition',
         condition,
         then,
-        else: this.parseExpression(),
+        else: this.expression(),
       };
     }
 
@@ -119,19 +117,19 @@ export default class Parser {
     };
   }
 
-  parseLambda(): LambdaNode {
-    const variables = this.parseDelimited(
-      this.parseVariable, {
+  lambda(): LambdaNode {
+    const variables = this.delimited(
+      this.variable, {
         start: '(',
         stop: ')',
         separator: ',',
       }
     );
-    const body = this.parseExpression();
+    const body = this.expression();
     return { type: 'Lambda', variables, body };
   }
 
-  parseDelimited<T: string | AST>(parse: ParseFn<T>, options: DelimitedOptions): T[] {
+  delimited<T: string | AST>(parse: ParseFn<T>, options: DelimitedOptions): T[] {
     const { start, stop, separator } = options;
 
     let first = true;
@@ -159,7 +157,7 @@ export default class Parser {
     return result;
   }
 
-  parseVariable = (): string => {
+  variable = (): string => {
     const token = this.next();
     if (token.type !== 'Variable') {
       throw this.input.error('Expecting variable name');
@@ -167,31 +165,31 @@ export default class Parser {
     return token.value.toString();
   };
 
-  parseExpression = (): AST => this.maybeCall(
-    () => this.maybeBinary(this.parseAtom())
+  expression = (): AST => this.call(
+    () => this.binary(this.atom())
   );
 
-  parseAtom = (): AST => this.maybeCall(
+  atom = (): AST => this.call(
     () => {
       if (this.is('(', 'Punctuation')) {
         this.next();
-        const expression = this.parseExpression();
+        const expression = this.expression();
         this.skip(')', 'Punctuation');
         return expression;
       }
 
       if (this.is('{', 'Punctuation')) {
-        return this.parseProgram();
+        return this.program();
       }
       if (this.is('if', 'Keyword')) {
-        return this.parseCondition();
+        return this.condition();
       }
       if (this.is('true', 'Keyword') || this.is('false', 'Keyword')) {
-        return this.parseBoolean();
+        return this.boolean();
       }
       if (this.is('def', 'Keyword')) {
         this.next();
-        return this.parseLambda();
+        return this.lambda();
       }
 
       const token = this.next();
@@ -206,7 +204,7 @@ export default class Parser {
     }
   );
 
-  parseBoolean(): BooleanNode {
+  boolean(): BooleanNode {
     const { value } = this.next();
     return {
       type: 'Boolean',
@@ -218,8 +216,8 @@ export default class Parser {
     return {
       type: 'Call',
       function: ast,
-      arguments: this.parseDelimited(
-        this.parseExpression, {
+      arguments: this.delimited(
+        this.expression, {
           start: '(',
           stop: ')',
           separator: ',',
@@ -228,14 +226,14 @@ export default class Parser {
     };
   }
 
-  maybeCall = (parse: () => AST): AST => {
+  call = (parse: () => AST): AST => {
     const ast = parse();
     return this.is('(', 'Punctuation') ?
       this.parseCall(ast) :
       ast;
   }
 
-  maybeBinary(lhs: AST, lhsPrecedence: number = 0): AST {
+  binary(lhs: AST, lhsPrecedence: number = 0): AST {
     if (!this.isOperator()) return lhs;
 
     const { value } = ((this.input.peek(): any): Token);
@@ -244,14 +242,14 @@ export default class Parser {
       this.input.next();
 
       const operator = value.toString();
-      const lhsNext = this.parseAtom();
-      const rhs = this.maybeBinary(lhsNext, rhsPrecedence);
+      const lhsNext = this.atom();
+      const rhs = this.binary(lhsNext, rhsPrecedence);
 
       const ast = value === '=' ?
         { type: 'Assignment', lhs, rhs } :
         { type: 'Binary', operator, lhs, rhs };
 
-      return this.maybeBinary(ast, lhsPrecedence);
+      return this.binary(ast, lhsPrecedence);
     }
 
     return lhs;

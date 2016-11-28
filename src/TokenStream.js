@@ -17,6 +17,9 @@ export type Token = {
   value: string | number,
 };
 
+/*
+ * A simple lexer.
+ */
 export default class TokenStream {
   static keywords = ['if', 'then', 'else', 'def', 'true', 'false'];
 
@@ -41,7 +44,7 @@ export default class TokenStream {
 
   peek(): ?Token {
     if (!this.current) {
-      this.current = this.readNext();
+      this.current = this.read();
     }
     return this.current;
   }
@@ -49,7 +52,7 @@ export default class TokenStream {
   next(): ?Token {
     const token = this.current;
     this.current = null;
-    return token || this.readNext();
+    return token || this.read();
   }
 
   eof(): boolean {
@@ -60,19 +63,19 @@ export default class TokenStream {
     return this.input.error(message);
   }
 
-  readNext(): ?Token {
+  read(): ?Token {
     this.readWhile(TokenStream.isWhiteSpace);
     if (this.input.eof()) return null;
 
     const char = this.input.peek();
     if (char === '#') {
       this.skipComment();
-      return this.readNext();
+      return this.read();
     }
 
-    if (char === '"') return this.readString();
-    if (TokenStream.isDigit(char)) return this.readNumber();
-    if (TokenStream.isIdentifierStart(char)) return this.readIdentifier();
+    if (char === '"') return this.string();
+    if (TokenStream.isDigit(char)) return this.number();
+    if (TokenStream.isIdentifierStart(char)) return this.identifier();
     if (TokenStream.isPunctuation(char)) {
       return {
         type: 'Punctuation',
@@ -89,14 +92,14 @@ export default class TokenStream {
     throw this.error(`Unexpected character: ${char}`);
   }
 
-  readString(): Token {
+  string(): Token {
     return {
       type: 'String',
-      value: this.readEscaped('"'),
+      value: this.escaped('"'),
     };
   }
 
-  readEscaped(endChar: string): string {
+  escaped(endChar: string): string {
     let escaped = false;
     let result = '';
     while (!this.input.eof()) {
@@ -115,7 +118,7 @@ export default class TokenStream {
     return result;
   }
 
-  readNumber(): Token {
+  number(): Token {
     let isFloat = false;
     const result = this.readWhile(char => {
       if (char === '.') {
@@ -131,7 +134,7 @@ export default class TokenStream {
     };
   }
 
-  readIdentifier(): Token {
+  identifier(): Token {
     const result = this.readWhile(TokenStream.isIdentifier);
     return {
       type: TokenStream.isKeyword(result) ? 'Keyword' : 'Variable',

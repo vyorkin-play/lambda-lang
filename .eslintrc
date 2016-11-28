@@ -29,6 +29,7 @@
       "optionalDependencies": false,
     }],
 
+    "no-use-before-define": 0,
     "no-duplicate-imports": [0],
     "no-confusing-arrow": 0,
     "no-underscore-dangle": 0,

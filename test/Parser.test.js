@@ -3,14 +3,14 @@ import { createParser } from './utils';
 
 test('correctly parses variables', t => {
   const parser = createParser('foo');
-  const variable = parser.parseVariable();
+  const variable = parser.variable();
   t.is(variable, 'foo');
 });
 
 test('parses simple delimited expressions', t => {
   const parser = createParser('(a, b, c)');
-  const values = parser.parseDelimited(
-    parser.parseVariable, {
+  const values = parser.delimited(
+    parser.variable, {
       start: '(',
       stop: ')',
       separator: ',',
@@ -24,8 +24,8 @@ test('parses booleans', t => {
   const trueParser = createParser('true');
   const falseParser = createParser('false');
 
-  const trueNode = trueParser.parseBoolean();
-  const falseNode = falseParser.parseBoolean();
+  const trueNode = trueParser.boolean();
+  const falseNode = falseParser.boolean();
 
   t.deepEqual(trueNode, { type: 'Boolean', value: true });
   t.deepEqual(falseNode, { type: 'Boolean', value: false });
@@ -33,8 +33,8 @@ test('parses booleans', t => {
 
 test('correctly parses assignment expression', t => {
   const parser = createParser('x = 42');
-  const variable = parser.parseAtom();
-  const expr = parser.maybeBinary(variable);
+  const variable = parser.atom();
+  const expr = parser.binary(variable);
 
   t.deepEqual(expr, {
     type: 'Assignment',
@@ -45,7 +45,7 @@ test('correctly parses assignment expression', t => {
 
 test('parses one-liner conditions', t => {
   const parser = createParser('if x % 2 == 0 then 1 else 0');
-  const condition = parser.parseCondition();
+  const condition = parser.condition();
 
   t.deepEqual(condition, {
     type: 'Condition',
@@ -70,7 +70,7 @@ test('parses one-liner conditions', t => {
 
 test('is able to parse a simple lambda', t => {
   const parser = createParser('(x) { x * 2 }');
-  const lambda = parser.parseLambda();
+  const lambda = parser.lambda();
 
   t.deepEqual(lambda, {
     type: 'Lambda',
@@ -96,7 +96,7 @@ test('correctly parses complex lambdas', t => {
       z = x   * y;
       z -  4 }
   `);
-  const lambda = parser.parseLambda();
+  const lambda = parser.lambda();
 
   t.deepEqual(lambda, {
     type: 'Lambda',
