@@ -43,6 +43,31 @@ test('correctly parses assignment expression', t => {
   });
 });
 
+test('parses one-liner conditions', t => {
+  const parser = createParser('if x % 2 == 0 then 1 else 0');
+  const condition = parser.parseCondition();
+
+  t.deepEqual(condition, {
+    type: 'Condition',
+    condition: {
+      type: 'Binary',
+      operator: '==',
+      lhs: {
+        type: 'Binary',
+        operator: '%',
+        lhs: { type: 'Variable', value: 'x' },
+        rhs: { type: 'Number', value: 2 },
+      },
+      rhs: {
+        type: 'Number',
+        value: 0,
+      },
+    },
+    then: { type: 'Number', value: 1 },
+    else: { type: 'Number', value: 0 },
+  });
+});
+
 test('is able to parse a simple lambda', t => {
   const parser = createParser('(x) { x * 2 }');
   const lambda = parser.parseLambda();

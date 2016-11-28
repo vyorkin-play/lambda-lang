@@ -101,9 +101,22 @@ export default class Parser {
       this.skip('then', 'Keyword');
     }
     const then = this.parseExpression();
-    return this.is('else', 'Keyword') ?
-      { type: 'Condition', condition, then, else: this.parseExpression() } :
-      { type: 'Condition', condition, then };
+
+    if (this.is('else', 'Keyword')) {
+      this.next();
+      return {
+        type: 'Condition',
+        condition,
+        then,
+        else: this.parseExpression(),
+      };
+    }
+
+    return {
+      type: 'Condition',
+      condition,
+      then,
+    };
   }
 
   parseLambda(): LambdaNode {
