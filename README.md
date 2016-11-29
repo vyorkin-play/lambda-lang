@@ -2,6 +2,15 @@
 
 A simple programming language written in JavaScript.
 
+```
+    sqr = def(x) x * x;
+    cube = def(x) x * x * x;
+    z = 4;
+    x = 8;
+    y = 5;
+    cube(z + x) - sqr(y) + 2
+```
+
 ### Credits
 
 All and everything is shamelessly stolen from [here](http://lisperator.net/pltut).
