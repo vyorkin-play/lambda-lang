@@ -93,7 +93,7 @@ function lambda(expression: LambdaNode, scope: any): any {
   return function lambdaFunc(...args) {
     const nested = scope.nested();
     variables.forEach((name, idx) => nested.define(name, args[idx]));
-    return evaluate(body, scope);
+    return evaluate(body, nested);
   };
 }
 
