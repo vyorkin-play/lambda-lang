@@ -10,18 +10,18 @@ type DelimitedOptions = {
   separator: string,
 };
 
-type NumberNode = { type: 'Number', value: number };
-type StringNode = { type: 'String', value: string };
-type BooleanNode = { type: 'Boolean', value: boolean };
-type VariableNode = { type: 'Variable', value: string };
-type LambdaNode = { type: 'Lambda', variables: string[], body: AST };
-type CallNode = { type: 'Call', function: AST, arguments: AST[] };
-type ConditionNode = { type: 'Condition', condition: AST, then: AST, else?: AST };
-type AssignmentNode = { type: 'Assignment', lhs: AST, rhs: AST };
-type BinaryNode = { type: 'Binary', operator: string, lhs: AST, rhs: AST };
-type ProgramNode = { type: 'Program', program: AST[] };
+export type NumberNode = { type: 'Number', value: number };
+export type StringNode = { type: 'String', value: string };
+export type BooleanNode = { type: 'Boolean', value: boolean };
+export type VariableNode = { type: 'Variable', value: string };
+export type LambdaNode = { type: 'Lambda', variables: string[], body: AST };
+export type CallNode = { type: 'Call', function: AST, arguments: AST[] };
+export type ConditionNode = { type: 'Condition', condition: AST, then: AST, else?: AST };
+export type AssignmentNode = { type: 'Assignment', lhs: AST, rhs: AST };
+export type BinaryNode = { type: 'Binary', operator: string, lhs: AST, rhs: AST };
+export type ProgramNode = { type: 'Program', program: AST[] };
 
-type AST =
+export type AST =
   | NumberNode
   | StringNode
   | BooleanNode
@@ -62,7 +62,7 @@ export default class Parser {
     this.input = input;
   }
 
-  expressions(): AST {
+  parse(): AST {
     const program = [];
 
     while (!this.input.eof()) {

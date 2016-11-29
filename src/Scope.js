@@ -55,6 +55,7 @@ const passthroughProps = [
   'lookup',
   'define',
 ];
+
 const resolver = {
   get(target: Scope, property: string): any {
     if (passthroughProps.includes(property)) {

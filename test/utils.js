@@ -3,6 +3,8 @@
 import InputStream from '../src/InputStream';
 import TokenStream from '../src/TokenStream';
 import Parser from '../src/Parser';
+import createScope from '../src/Scope';
+import evaluate from '../src/evaluate';
 
 export function createTokenStream(text: string): TokenStream {
   const input = new InputStream(text);
@@ -12,4 +14,11 @@ export function createTokenStream(text: string): TokenStream {
 export function createParser(text: string): Parser {
   const tokenStream = createTokenStream(text);
   return new Parser(tokenStream);
+}
+
+export function E(text: string): any {
+  const parser = createParser(text);
+  const expression = parser.parse();
+  const scope = createScope();
+  return evaluate(expression, scope);
 }

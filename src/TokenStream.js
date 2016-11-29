@@ -25,7 +25,7 @@ export default class TokenStream {
 
   static isKeyword = (token: string) => TokenStream.keywords.includes(token);
   static isDigit = (char: string) => /[0-9]/i.test(char);
-  static isOperator = (char: string) => '+-*/=%|<>!'.includes(char);
+  static isOperator = (char: string) => '+-*/=%|&<>!'.includes(char);
   static isPunctuation = (char: string) => ',;(){}[]'.includes(char);
   static isWhiteSpace = (char: string) => ' \t\n'.includes(char);
   static isIdentifierStart = (char: string) => /[a-z]/i.test(char);
