@@ -109,6 +109,11 @@ test('evaluates a simple program', t => {
   t.is(e(program), 16);
 });
 
+test('correctly evaluates an arithmetic expression', t => {
+  const program = `3 + 3 * 3`;
+  t.is(e(program), 12);
+});
+
 test('evaluates a complex program', t => {
   const program = `
     sqr = def(x) x * x;
