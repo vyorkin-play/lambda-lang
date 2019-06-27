@@ -1,6 +1,6 @@
-# Lamda Lang
+# Lambda Lang
 
-A simple programming language written in JavaScript.
+A simple programming language written in JavaScript (lol).
 
 ```
     sqr = def(x) x * x;
